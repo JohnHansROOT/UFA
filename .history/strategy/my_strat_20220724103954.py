@@ -17,14 +17,6 @@ import numpy as np
 
 logger = get_general_logger(STRATEGY_NAME, path=abspath("logs"))
 
-def plot_kline(name,symbol,kline):
-    df = pd.DataFrame(kline) # 将json转换为dataframe
-    data = df[["open","close","high","low"]].values.tolist() # 取出开盘、收盘、最高、最低数据，并转换为list
-    time = [t.split()[0] for t in df['datetime'].values.tolist()] # 取出时间，截取日期
-    kline_plot = Kline() # 创建kline对象
-    kline_plot.add_xaxis(time) # 添加横坐标
-    kline_plot.add_yaxis(f'{name}({symbol}) 日 K 线图',data) # 添加纵坐标
-    kline_plot.render() # 保存html
 
 def main(context: AccountContext):
     # 股票代码
@@ -89,3 +81,11 @@ def main(context: AccountContext):
     #     logger.info(f"卖出策略已执行")
     #     return
 
+def plot_kline(name,symbol,kline):
+    df = pd.DataFrame(kline) # 将json转换为dataframe
+    data = df[["open","close","high","low"]].values.tolist() # 取出开盘、收盘、最高、最低数据，并转换为list
+    time = [t.split()[0] for t in df['datetime'].values.tolist()] # 取出时间，截取日期
+    kline_plot = Kline() # 创建kline对象
+    kline_plot.add_xaxis(time) # 添加横坐标
+    kline_plot.add_yaxis(f'{name}({symbol}) 日 K 线图',data) # 添加纵坐标
+    kline_plot.render() # 保存html
