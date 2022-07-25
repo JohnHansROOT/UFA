@@ -9617,3 +9617,6 @@ NameError: name '获取当前持仓' is not defined
 2022-07-25 10:33:39,710 - INFO - 平均: 527.3075, 最新: 532.0, 差值: 0.89%
 2022-07-25 10:33:39,716 - INFO - <<<<<<<< Strategy Finish <<<<<<<<
 2022-07-25 10:33:39,716 - INFO - Time cost: 1.65s
+2022-07-25 14:25:33,409 - INFO - Initializing...
+2022-07-25 14:25:34,184 - INFO - >>>>>>>> Account Report >>>>>>>>
+2022-07-25 14:25:34,184 - INFO - Cash avaliable: 145401194 Total asset: 199641194
