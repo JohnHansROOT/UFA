@@ -24,13 +24,16 @@ def plot_kline(name,symbol,kline):
     kline_plot = Kline() # 创建kline对象
     kline_plot.add_xaxis(time) # 添加横坐标
     kline_plot.add_yaxis(f'{name}({symbol}) 日 K 线图',data) # 添加纵坐标
-    kline_plot.render(f"{name}.html") # 保存html
+    kline_plot.render() # 保存html
 
-def check(context,symbol):
+def main(context: AccountContext):
+    # 股票代码
+    symbol = "SH.300750"
     info = get_stock_info(symbol)
+    # print(info)
     name = info['名称']
 
-    # 获取近10日K线数据
+    # 获取近5日K线数据
     kline_end = datetime.now(timezone(timedelta(hours=8)))
     kline_start = kline_end - timedelta(days=20) + timedelta(seconds=1)
     kline = get_kline(
@@ -39,6 +42,7 @@ def check(context,symbol):
         kline_end.strftime("%Y-%m-%d %H:%M:%S"),
         "1d",  # 天级
     )
+    # pprint(kline)
     if len(kline) == 0:
         logger.warning(f"未查询到K线信息，请检查股票代码({symbol})或时间是否正确。若无误，请联系管理员。")
         return
@@ -52,11 +56,15 @@ def check(context,symbol):
     )
     logger.info(f"当前持仓：{pos_amount}")
 
-    # 计算近10日均值
+    # 计算近5日均值
     ma_close = sum([info["close"] / len(kline) for info in kline])
     latest_close = kline[-1]["close"]
     diff_pct = round((latest_close - ma_close) * 100 / ma_close, 2)
     logger.info(f"平均: {ma_close}, 最新: {latest_close}, 差值: {diff_pct}%")
+
+    # close_data = [info["close"] for info in kline]
+    # plt.plot(close_data)
+    # plt.savefig("kline.png")
     
     plot_kline(name,symbol,kline)
 
@@ -72,7 +80,6 @@ def check(context,symbol):
     ):
         make_order(symbol, "market", "buy", buy_amount)
         logger.info(f"买入策略已执行")
-        logger.info(f"买入{buy_amount}股{name}({symbol})")
         return
 
     # 卖出
@@ -80,13 +87,5 @@ def check(context,symbol):
         sell_amount = (pos_amount - max_pos_amount) // 100 * 100  # 卖出超过阈值的持仓量（须为100的倍数）
         make_order(symbol, "market", "sell", sell_amount)
         logger.info(f"卖出策略已执行")
-        logger.info(f"卖出{buy_amount}股{name}({symbol})")
         return
 
-
-def main(context: AccountContext):
-    # 股票代码
-    symbol1 = "SH.300750"
-    symbol2 = "SZ.002340"
-    check(context,symbol1)
-    check(context,symbol2)
